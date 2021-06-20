@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour
     float yaw;
     float pitch;
     float roll;
+    float baseRotX;
 
     void Start()
     {
@@ -24,6 +25,8 @@ public class CameraController : MonoBehaviour
         yaw = defaultPosition.transform.rotation.eulerAngles.x;
         pitch = defaultPosition.transform.rotation.eulerAngles.y;
         roll = defaultPosition.transform.rotation.eulerAngles.z;
+        
+        baseRotX = Base.transform.rotation.eulerAngles.y;
     }
 
     void Update()
@@ -32,11 +35,15 @@ public class CameraController : MonoBehaviour
         {
             yaw += Input.GetAxis("Mouse Y") * sensitivity * (invert ? 1f : -1f);
             yaw = Mathf.Clamp(yaw, minYaw, maxYaw);
+
+            baseRotX -= Input.GetAxis("Mouse X") * sensitivity;
         }
 
         currYaw = Mathf.Lerp(currYaw, yaw, CamSpeed * Time.deltaTime);
         transform.position = Base.transform.GetChild(GameManager.instance.selectedCarIndex).position;
         transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(currYaw, pitch, roll), CamSpeed * Time.deltaTime);
         transform.Translate(new Vector3(0, 0, -Vector3.Distance(Base.transform.GetChild(GameManager.instance.selectedCarIndex).position, camInitialPos)));
+
+        Base.transform.rotation = Quaternion.Slerp(Base.transform.rotation, Quaternion.Euler(0, baseRotX, 0), CamSpeed * Time.deltaTime);
     }
 }
