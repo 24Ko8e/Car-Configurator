@@ -821,12 +821,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Base: {fileID: 589483976}
-  defaultPosition: {fileID: 1083875328}
+  cameraPosition: {fileID: 1083875328}
   CamSpeed: 3.8
   sensitivity: 5
   maxYaw: 90
   minYaw: 0
   invert: 0
+  SetCameraToDefaultTransform: 1
+  camZoomSpeed: 3.8
+  zoomSensitivity: 1
+  MaxZoom: 7
+  minZoom: 2.5
 --- !u!20 &1687258584
 Camera:
   m_ObjectHideFlags: 0
