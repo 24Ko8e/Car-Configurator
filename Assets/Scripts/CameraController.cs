@@ -1,18 +1,22 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public GameObject Base;
-    public Transform cameraPosition;
+    public Transform defaultCameraTransform;
+    
+    Transform targetCameraPosition;
+    
     public float CamSpeed = 7.5f;
     public float sensitivity = 5f;
     public float maxYaw = 0;
     public float minYaw = -90;
     public bool invert = false;
 
-    public bool SetCameraToDefaultTransform = true;
+    public bool CameraSetToDefaultTransform = true;
     float currYaw;
     float yaw;
     float pitch;
@@ -29,23 +33,33 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        camDistance = Vector3.Distance(Base.transform.GetChild(GameManager.instance.selectedCarIndex).position, transform.position);
+        camDistance = Vector3.Distance(Base.transform.GetChild(GameManager.instance.selectedCarIndex).position, defaultCameraTransform.transform.position);
         ZoomLevel = camDistance;
 
-        yaw = cameraPosition.transform.rotation.eulerAngles.x;
-        pitch = cameraPosition.transform.rotation.eulerAngles.y;
-        roll = cameraPosition.transform.rotation.eulerAngles.z;
+        yaw = defaultCameraTransform.transform.rotation.eulerAngles.x;
+        pitch = defaultCameraTransform.transform.rotation.eulerAngles.y;
+        roll = defaultCameraTransform.transform.rotation.eulerAngles.z;
 
         baseRotX = Base.transform.rotation.eulerAngles.y;
     }
 
     void Update()
     {
-        if (SetCameraToDefaultTransform)
+        if (CameraSetToDefaultTransform)
         {
             CameraRotation();
             CameraZooming();
         }
+        else
+        {
+            SetCameraToFocusPoint();
+        }
+    }
+
+    private void SetCameraToFocusPoint()
+    {
+        transform.position = Vector3.Lerp(transform.position, targetCameraPosition.position, CamSpeed * Time.deltaTime);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetCameraPosition.rotation, CamSpeed * Time.deltaTime);
     }
 
     private void CameraZooming()
@@ -78,5 +92,17 @@ public class CameraController : MonoBehaviour
         transform.Translate(new Vector3(0, 0, -camDistance));
 
         Base.transform.rotation = Quaternion.Slerp(Base.transform.rotation, Quaternion.Euler(0, baseRotX, 0), CamSpeed * Time.deltaTime);
+    }
+
+    public void SetCustomCameraTransform(Transform target)
+    {
+        CameraSetToDefaultTransform = false;
+        targetCameraPosition = target;
+    }
+
+    public void SetDefaultCameraPosition()
+    {
+        CameraSetToDefaultTransform = true;
+        targetCameraPosition = defaultCameraTransform;
     }
 }

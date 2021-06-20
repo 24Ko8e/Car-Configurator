@@ -4,15 +4,52 @@ using UnityEngine;
 
 public class Car : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public CameraController cameraController;
+
+    public Transform FrontView;
+    public Transform RearView;
+    public Transform RightWindow;
+    public Transform LeftWindow;
+    public Transform FrontRightWheel;
+    public Transform FrontLeftWheel;
+
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SetCameraToFrontView()
+    {
+        cameraController.SetCustomCameraTransform(FrontView);
+    }
+
+    public void SetCameraToRearView()
+    {
+        cameraController.SetCustomCameraTransform(RearView);
+    }
+
+    public void SetCameraToRightWindow()
+    {
+        cameraController.SetCustomCameraTransform(RightWindow);
+    }
+
+
+    public void SetCameraToLeftWindow()
+    {
+        cameraController.SetCustomCameraTransform(LeftWindow);
+    }
+    public void SetCameraToFrontRightWheel()
+    {
+        cameraController.SetCustomCameraTransform(FrontRightWheel);
+    }
+
+    public void SetCameraToFrontLeftWheel()
+    {
+        cameraController.SetCustomCameraTransform(FrontLeftWheel);
     }
 }
