@@ -64,6 +64,8 @@ public class CameraController : MonoBehaviour
 
     private void SetCameraToFocusPoint()
     {
+
+
         if (LookAround)
         {
             transform.position = Vector3.Lerp(transform.position, targetCameraPosition.position, CamSpeed * Time.deltaTime);

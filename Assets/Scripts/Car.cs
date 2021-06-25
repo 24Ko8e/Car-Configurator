@@ -22,6 +22,10 @@ public class Car : MonoBehaviour
     public GameObject rearViewBtns;
     public GameObject interior_P_ViewBtns;
     public GameObject interior_D_ViewBtns;
+    public GameObject FrontRightWheelViewBtns;
+    public GameObject FrontLeftWheelViewBtns;
+
+    public GameObject[] body;
 
     GameObject lastselected;
 
@@ -68,11 +72,15 @@ public class Car : MonoBehaviour
     public void SetCameraToFrontRightWheel()
     {
         cameraController.SetCustomCameraTransform(FrontRightWheelView);
+        switchBtnSet(FrontRightWheelViewBtns);
+        cameraController.LookAround = false;
     }
 
     public void SetCameraToFrontLeftWheel()
     {
         cameraController.SetCustomCameraTransform(FrontLeftWheelView);
+        switchBtnSet(FrontLeftWheelViewBtns);
+        cameraController.LookAround = false;
     }
 
     public void SetCameraToInteriorPassenger()
