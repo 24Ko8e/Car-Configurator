@@ -15,6 +15,7 @@ public class CameraController : MonoBehaviour
     public float maxYaw = 0;
     public float minYaw = -90;
     public bool invert = false;
+    public bool CameraControls = true;
 
     public bool CameraSetToDefaultTransform = true;
     public bool LookAround = false;
@@ -39,7 +40,6 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         camDistance = Vector3.Distance(Base.transform.GetChild(GameManager.instance.selectedCarIndex).position, defaultCameraTransform.transform.position);
-
         ZoomLevel = camDistance;
 
         yaw = defaultCameraTransform.transform.rotation.eulerAngles.x;
@@ -47,6 +47,8 @@ public class CameraController : MonoBehaviour
         roll = defaultCameraTransform.transform.rotation.eulerAngles.z;
 
         baseRotX = Base.transform.rotation.eulerAngles.y;
+
+        CameraControls = true;
     }
 
     void Update()
@@ -73,12 +75,18 @@ public class CameraController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.Euler(targetCameraPosition.rotation.eulerAngles.x + interiorLookAroundCurrYaw,
                                     targetCameraPosition.rotation.eulerAngles.y + interiorLookAroundPitch, targetCameraPosition.rotation.eulerAngles.z), CamSpeed * Time.deltaTime);
 
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) && CameraControls)
             {
                 interiorLookAroundYaw += Input.GetAxis("Mouse Y") * sensitivity * (invert ? -1f : 1f);
                 interiorLookAroundYaw = Mathf.Clamp(interiorLookAroundYaw, -90, 90);
                 interiorLookAroundPitch -= Input.GetAxis("Mouse X") * sensitivity;
 
+            }
+            else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                interiorLookAroundYaw += Input.GetAxis("Vertical") * sensitivity * (invert ? -1f : 1f);
+                interiorLookAroundYaw = Mathf.Clamp(interiorLookAroundYaw, -90, 90);
+                interiorLookAroundPitch -= Input.GetAxis("Horizontal") * sensitivity * 0.5f;
             }
             //interiorLookAroundCurrYaw = Mathf.Lerp(interiorLookAroundCurrYaw, interiorLookAroundYaw, CamSpeed * Time.deltaTime);
             interiorLookAroundCurrYaw = interiorLookAroundYaw;
@@ -92,13 +100,22 @@ public class CameraController : MonoBehaviour
 
     private void CameraRotation()
     {
-        if (Input.GetMouseButton(0))
+
+        if (Input.GetMouseButton(0) && CameraControls)
         {
             yaw += Input.GetAxis("Mouse Y") * sensitivity * (invert ? 1f : -1f);
             yaw = Mathf.Clamp(yaw, minYaw, maxYaw);
 
             baseRotX -= Input.GetAxis("Mouse X") * sensitivity;
         }
+        else if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        {
+            yaw += Input.GetAxis("Vertical") * sensitivity * (invert ? 1f : -1f);
+            yaw = Mathf.Clamp(yaw, minYaw, maxYaw);
+
+            baseRotX -= Input.GetAxis("Horizontal") * sensitivity * 0.5f;
+        }
+
         currYaw = Mathf.Lerp(currYaw, yaw, CamSpeed * Time.deltaTime);
 
         defaultCameraTransform.transform.position = Base.transform.GetChild(GameManager.instance.selectedCarIndex).position;
@@ -113,7 +130,11 @@ public class CameraController : MonoBehaviour
 
     private void CameraZooming()
     {
-        ZoomLevel += Input.GetAxis("Mouse ScrollWheel") * sensitivity;
+        if (CameraControls)
+        {
+            ZoomLevel += Input.GetAxis("Mouse ScrollWheel") * zoomSensitivity;
+        }
+
         if (ZoomLevel < minZoom)
         {
             ZoomLevel = Mathf.Lerp(ZoomLevel, minZoom, 50f * Time.deltaTime);
@@ -126,6 +147,67 @@ public class CameraController : MonoBehaviour
         camDistance = ZoomLevel;
     }
 
+    public void ZoomIn()
+    {
+        ZoomLevel -= zoomSensitivity;
+    }
+
+    public void ZoomOut()
+    {
+        ZoomLevel += zoomSensitivity;
+    }
+
+    public void UpCameraRotation()
+    {
+        if (CameraSetToDefaultTransform)
+        {
+            yaw += sensitivity * (invert ? 1f : -1f);
+            yaw = Mathf.Clamp(yaw, minYaw, maxYaw);
+        }
+        else
+        {
+            interiorLookAroundYaw += sensitivity * (invert ? -1f : 1f);
+            interiorLookAroundYaw = Mathf.Clamp(interiorLookAroundYaw, -90, 90);
+        }
+    }
+
+    public void DownCameraRotation()
+    {
+        if (CameraSetToDefaultTransform)
+        {
+            yaw -= sensitivity * (invert ? 1f : -1f);
+            yaw = Mathf.Clamp(yaw, minYaw, maxYaw);
+        }
+        else
+        {
+            interiorLookAroundYaw -= sensitivity * (invert ? -1f : 1f);
+            interiorLookAroundYaw = Mathf.Clamp(interiorLookAroundYaw, -90, 90);
+        }
+    }
+
+    public void LeftCameraRotation()
+    {
+        if (CameraSetToDefaultTransform)
+        {
+            baseRotX += sensitivity;
+        }
+        else
+        {
+            interiorLookAroundPitch += sensitivity;
+        }
+    }
+
+    public void RightCameraRotation()
+    {
+        if (CameraSetToDefaultTransform)
+        {
+            baseRotX -= sensitivity;
+        }
+        else
+        {
+            interiorLookAroundPitch -= sensitivity;
+        }
+    }
 
     public void SetCustomCameraTransform(Transform target)
     {

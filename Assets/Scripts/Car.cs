@@ -26,8 +26,13 @@ public class Car : MonoBehaviour
     public GameObject FrontLeftWheelViewBtns;
 
     public GameObject[] body;
+    public GameObject[] wheels;
+    public GameObject lastSelectedWheel;
+    public GameObject[] interior;
 
     GameObject lastselected;
+
+    public GameObject hotspots;
 
     void Start()
     {
@@ -102,5 +107,20 @@ public class Car : MonoBehaviour
         lastselected.SetActive(false);
         btnSet.SetActive(true);
         lastselected = btnSet;
+    }
+
+    public void ToggleHotspots()
+    {
+        hotspots.SetActive(!hotspots.activeInHierarchy);
+    }
+
+    public void EnableHotspots()
+    {
+        hotspots.SetActive(true);
+    }
+
+    public void DisableHotspots()
+    {
+        hotspots.SetActive(false);
     }
 }

@@ -80,7 +80,7 @@ PlayerSettings:
   bakeCollisionMeshes: 0
   forceSingleInstance: 1
   useFlipModelSwapchain: 1
-  resizableWindow: 0
+  resizableWindow: 1
   useMacAppStoreValidation: 0
   macAppStoreCategory: public.app-category.games
   gpuSkinning: 1
@@ -156,7 +156,7 @@ PlayerSettings:
       v2Signing: 1
     enable360StereoCapture: 0
   isWsaHolographicRemotingEnabled: 0
-  enableFrameTimingStats: 0
+  enableFrameTimingStats: 1
   useHDRDisplay: 0
   D3DHDRBitDepth: 0
   m_ColorGamuts: 0000000003000000
