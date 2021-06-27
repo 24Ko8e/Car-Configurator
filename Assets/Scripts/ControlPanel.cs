@@ -37,12 +37,14 @@ public class ControlPanel : MonoBehaviour
 
     public void TakeScreenshot()
     {
+#if UNITY_STANDALONE || UNITY_EDITOR
         bool hotspotsAlreadyDisabled = !GameManager.instance.cars[GameManager.instance.selectedCarIndex].hotspots.activeInHierarchy;
         
         if(!hotspotsAlreadyDisabled)
             GameManager.instance.cars[GameManager.instance.selectedCarIndex].DisableHotspots();
 
         Camera cam = Camera.main;
+
         string directory = System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyPictures) + "/Car Configurator";
 
         if (!Directory.Exists(directory))
@@ -63,5 +65,9 @@ public class ControlPanel : MonoBehaviour
 
         if (!hotspotsAlreadyDisabled)
             GameManager.instance.cars[GameManager.instance.selectedCarIndex].EnableHotspots();
+
+#elif UNITY_WEBGL
+
+#endif
     }
 }
